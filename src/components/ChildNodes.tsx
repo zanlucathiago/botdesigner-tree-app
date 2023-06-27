@@ -3,6 +3,7 @@ import AddNodeDashedCircle from './AddNodeDashedCircle';
 import SquareWithCenteredContent from './SquareWithCenteredContent';
 import CircleWithArrow from './CircleWithArrow';
 import TreeNode from './TreeNode';
+import Tooltip from './Tooltip';
 
 interface TreeNode {
   id: number;
@@ -12,9 +13,12 @@ interface TreeNode {
 interface ChildNodesProps {
   node: TreeNode;
   addChildNode: (parentNode: TreeNode) => void;
+  idHierarchy: string;
 }
 
-const ChildNodes: React.FC<ChildNodesProps> = ({ node, addChildNode }) => {
+const ChildNodes: React.FC<ChildNodesProps> = ({ node, addChildNode, idHierarchy }) => {
+  const nodeId = idHierarchy ? `${idHierarchy}.${node.id}` : `${node.id}`;
+
   return (
     <div className="flex">
       <div className="flex flex-col">
@@ -25,11 +29,12 @@ const ChildNodes: React.FC<ChildNodesProps> = ({ node, addChildNode }) => {
       </div>
       <div className="flex flex-col">
         <SquareWithCenteredContent left bottom>
+          <Tooltip text={`node ${nodeId}`} />
           <TreeNode />
         </SquareWithCenteredContent>
         {node.children.map(childNode => (
           <React.Fragment key={childNode.id}>
-            <ChildNodes node={childNode} addChildNode={addChildNode} />
+            <ChildNodes node={childNode} addChildNode={addChildNode} idHierarchy={nodeId} />
           </React.Fragment>
         ))}
         <AddNodeDashedCircle onClick={() => addChildNode(node)} />
